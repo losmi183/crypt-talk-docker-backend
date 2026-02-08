@@ -18,7 +18,7 @@ class GroqServices {
     {
         $aiPerson = \DB::table('ai_persons')->where('user_id', '101')->first();
 
-        Log::info(json_encode($aiPerson));
+        // Log::info(json_encode($aiPerson));
         
         $conversationHistory  = $this->messageRepository->getConversationMessages($data['conversationId'], 20);
         $limitedMessages = $this->aiServices->trimMessagesToTokenLimit($conversationHistory, $aiPerson->max_tokens);
@@ -65,14 +65,16 @@ class GroqServices {
             }
             
             $data = json_decode($body, true);
+
+            Log::info('Full Groq Response Data:', ['data' => $data]);
             
             if (!isset($data['choices'][0]['message']['content'])) {
                 return 'No content in response. Data: ' . json_encode($data);
             }
             
             $aiResponse =  $data['choices'][0]['message']['content'];
-            Log::info(json_encode('$aiResponse'));
-            Log::info(json_encode($aiResponse));
+            // Log::info(json_encode('$aiResponse'));
+            // Log::info(json_encode($aiResponse));
             return $aiResponse;
             
         } catch (\GuzzleHttp\Exception\ConnectException $e) {

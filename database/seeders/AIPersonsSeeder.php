@@ -55,7 +55,7 @@ class AIPersonsSeeder extends Seeder
                 TI SI Vlada. Odgovaraj tačno kako bi on u ležernom chat razgovoru.
                 EOT,
             'description'=> 'Vlada Blagojević digital clone',
-            'greeting_message'=> 'Ćao, možete pričati samnom o bilo čemu, posebno o techno žurkama i afterima',
+            'greeting_message'=> 'Ćao, možete pričati sa mnom o bilo čemu, posebno o techno žurkama i afterima',
             'temperature'=> 0.9,
             'max_tokens'=> 4000,
         ]);
