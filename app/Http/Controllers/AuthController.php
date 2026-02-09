@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Pusher\Pusher;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Services\JWTServices;
 use OpenApi\Attributes as OA;
 use App\Services\AuthServices;
 use Illuminate\Http\JsonResponse;
@@ -12,6 +13,7 @@ use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RefreshRequest;
 use App\Http\Requests\RegisterRequest;
 use App\Http\Requests\GoogleLoginRequest;
+use App\Repository\ConversationRepository;
 use App\Http\Requests\ProfileUpdateRequest;
 use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\ForgotPasswordRequest;
@@ -21,8 +23,12 @@ use Symfony\Component\HttpFoundation\Response;
 class AuthController extends Controller
 {
     public AuthServices $authServices;
-    public function __construct(AuthServices $authServices) {
+    public ConversationRepository $conversationRepository;
+    private JWTServices $jwtServices;
+    public function __construct(AuthServices $authServices, ConversationRepository $conversationRepository, JWTServices $jwtServices) {
         $this->authServices = $authServices;
+        $this->conversationRepository = $conversationRepository;
+        $this->jwtServices = $jwtServices;
     }
 
     #[OA\Post(
@@ -118,8 +124,22 @@ class AuthController extends Controller
     public function verifyEmail(Request $request) {
 
         $verify_token =  $request->query('verify_token');
+
+        $status = $this->jwtServices->decodeJWT($verify_token);
+        if ($status == 403) {
+            abort( 403, 'Token has expired');
+        }
+        if ($status != 200) {
+            abort(400, 'Token not valid');
+        }
+
+        $userData = $this->jwtServices->getContent(); 
         
-        $result = $this->authServices->verifyEmail($verify_token);
+        $this->authServices->verifyEmail($userData);
+
+        $user = \DB::table('users')->where('email', $userData['email'])->first();
+
+        $this->conversationRepository->aiAssistentToNewUser($user->id);
 
         $frontendUrl = env('APP_ENV') === 'production' 
             ? env('FRONTEND_PROD') 

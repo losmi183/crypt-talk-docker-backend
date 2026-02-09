@@ -85,4 +85,34 @@ class ConversationRepository
             ->where('user_id', '!=', $data['user_id'])
             ->get();
    }
+
+   public function aiAssistentToNewUser(int $userId)
+   {
+        $ai_assistent_user_id = 101;
+        try {
+            $conversation_id = DB::table('conversations')->insertGetId([
+                'type' => 'chatbot',
+                'title' => 'Ai assistent',
+            ]);
+            DB::table('conversation_user')->insert([
+                'conversation_id' => $conversation_id,
+                'user_id' => $ai_assistent_user_id,
+            ]);
+            DB::table('conversation_user')->insert([
+                'conversation_id' => $conversation_id,
+                'user_id' => $userId,
+            ]);
+
+            $ai_person = DB::table('ai_persons')->where('user_id', $ai_assistent_user_id)->first();
+
+            DB::table('messages')->insert([
+                'conversation_id' => $conversation_id,
+                'sender_id' => $ai_person->user_id,
+                'message' => $ai_person->greeting_message,
+            ]);
+
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
+   }
 }

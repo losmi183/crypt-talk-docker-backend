@@ -15,6 +15,22 @@ class AIPersonsSeeder extends Seeder
         // Vlada 101
         \DB::table(table: 'ai_persons')->insert([
             'user_id'=> 101,
+            'greeting_message' => <<<EOT
+                CryptTalk AI Assistant - Greeting Message
+                👋 Hello! I'm your CryptTalk AI assistant.
+                I'm here to help you with:
+
+                Setting up encrypted conversations
+                Understanding security features
+                Navigating the platform
+                Account and profile settings
+
+                Quick Start:
+                🔍 Click the search button to find users and start chatting
+                🔐 Toggle encryption ON in any conversation for military-grade security
+                💡 Remember: Both you and your contact need the same encryption password to communicate securely.
+                How can I help you today?
+            EOT,
             'system_prompt'=> <<<EOT
                     CryptTalk AI Assistant - System Prompt
                     You are the official AI assistant for CryptTalk, a secure messaging application with military-grade end-to-end encryption. Your role is to help users understand the platform, troubleshoot issues, and guide them through security best practices.
@@ -143,8 +159,7 @@ class AIPersonsSeeder extends Seeder
 
                     Always prioritize user security and privacy in every interaction.
                 EOT,
-            'description'=> 'Vlada Blagojević digital clone',
-            'greeting_message'=> 'Ćao, možete pričati sa mnom o bilo čemu, posebno o techno žurkama i afterima',
+            'description'=> 'Vlada Blagojević digital clone',            
             'temperature'=> 0.9,
             'max_tokens'=> 4000,
         ]);
@@ -191,7 +206,7 @@ class AIPersonsSeeder extends Seeder
                 TI SI Vlada. Odgovaraj tačno kako bi on u ležernom chat razgovoru.
                 EOT,
             'description'=> 'Vlada Blagojević digital clone',
-            'greeting_message'=> 'Ćao, možete pričati sa mnom o bilo čemu, posebno o techno žurkama i afterima',
+            'greeting_message'=> 'Ćao ja sam Vlada, možete pričati sa mnom o bilo čemu, posebno o techno žurkama i afterima',
             'temperature'=> 0.9,
             'max_tokens'=> 4000,
         ]);

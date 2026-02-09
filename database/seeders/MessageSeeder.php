@@ -212,91 +212,91 @@ class MessageSeeder extends Seeder
 
         // Ubacujemo po dve poruke po iteraciji
         // Konverzacija 1
-        for ($i = 0; $i < count($messages); $i += 2) {
-            // user 1 → user 2
-            DB::table('messages')->insert([
-                'conversation_id' => 1,
-                'sender_id' => 1,
-                'message' => $messages[$i],
-                'created_at' => $timestamp->copy(),
-                'updated_at' => $timestamp->copy(),
-            ]);
-            $timestamp->addMinutes(1);
+        // for ($i = 0; $i < count($messages); $i += 2) {
+        //     // user 1 → user 2
+        //     DB::table('messages')->insert([
+        //         'conversation_id' => 1,
+        //         'sender_id' => 1,
+        //         'message' => $messages[$i],
+        //         'created_at' => $timestamp->copy(),
+        //         'updated_at' => $timestamp->copy(),
+        //     ]);
+        //     $timestamp->addMinutes(1);
 
-            // user 2 → user 1
-            if (isset($messages[$i + 1])) {
-                DB::table('messages')->insert([
-                    'conversation_id' => 1,
-                    'sender_id' => 2,
-                    'message' => $messages[$i + 1],
-                    'created_at' => $timestamp->copy(),
-                    'updated_at' => $timestamp->copy(),
-                ]);
-                $timestamp->addMinutes(1);
-            }
-        }
+        //     // user 2 → user 1
+        //     if (isset($messages[$i + 1])) {
+        //         DB::table('messages')->insert([
+        //             'conversation_id' => 1,
+        //             'sender_id' => 2,
+        //             'message' => $messages[$i + 1],
+        //             'created_at' => $timestamp->copy(),
+        //             'updated_at' => $timestamp->copy(),
+        //         ]);
+        //         $timestamp->addMinutes(1);
+        //     }
+        // }
 
-        // Konverzacija 2
-        for ($i = 0; $i < count($messages2); $i += 2) {
-            // user 1 → user 2
-            DB::table('messages')->insert([
-                'conversation_id' => 2,
-                'sender_id' => 1,
-                'message' => $messages2[$i],
-                'created_at' => $timestamp->copy(),
-                'updated_at' => $timestamp->copy(),
-            ]);
-            $timestamp->addMinutes(1);
+        // // Konverzacija 2
+        // for ($i = 0; $i < count($messages2); $i += 2) {
+        //     // user 1 → user 2
+        //     DB::table('messages')->insert([
+        //         'conversation_id' => 2,
+        //         'sender_id' => 1,
+        //         'message' => $messages2[$i],
+        //         'created_at' => $timestamp->copy(),
+        //         'updated_at' => $timestamp->copy(),
+        //     ]);
+        //     $timestamp->addMinutes(1);
 
-            // user 2 → user 1
-            if (isset($messages2[$i + 1])) {
-                DB::table('messages')->insert([
-                    'conversation_id' => 2,
-                    'sender_id' => 2,
-                    'message' => $messages2[$i + 1],
-                    'created_at' => $timestamp->copy(),
-                    'updated_at' => $timestamp->copy(),
-                ]);
-                $timestamp->addMinutes(1);
-            }
-        }
+        //     // user 2 → user 1
+        //     if (isset($messages2[$i + 1])) {
+        //         DB::table('messages')->insert([
+        //             'conversation_id' => 2,
+        //             'sender_id' => 2,
+        //             'message' => $messages2[$i + 1],
+        //             'created_at' => $timestamp->copy(),
+        //             'updated_at' => $timestamp->copy(),
+        //         ]);
+        //         $timestamp->addMinutes(1);
+        //     }
+        // }
 
-        // Konverzacija 3 (3. korisnik povremeno)
-        for ($i = 0; $i < count($messages3); $i += 3) {
-            // user 1 → user 2
-            DB::table('messages')->insert([
-                'conversation_id' => 3,
-                'sender_id' => 1,
-                'message' => $messages3[$i],
-                'created_at' => $timestamp->copy(),
-                'updated_at' => $timestamp->copy(),
-            ]);
-            $timestamp->addMinutes(1);
+        // // Konverzacija 3 (3. korisnik povremeno)
+        // for ($i = 0; $i < count($messages3); $i += 3) {
+        //     // user 1 → user 2
+        //     DB::table('messages')->insert([
+        //         'conversation_id' => 3,
+        //         'sender_id' => 1,
+        //         'message' => $messages3[$i],
+        //         'created_at' => $timestamp->copy(),
+        //         'updated_at' => $timestamp->copy(),
+        //     ]);
+        //     $timestamp->addMinutes(1);
 
-            // user 2 → user 1
-            if (isset($messages3[$i + 1])) {
-                DB::table('messages')->insert([
-                    'conversation_id' => 3,
-                    'sender_id' => 2,
-                    'message' => $messages3[$i + 1],
-                    'created_at' => $timestamp->copy(),
-                    'updated_at' => $timestamp->copy(),
-                ]);
-                $timestamp->addMinutes(1);
-            }
+        //     // user 2 → user 1
+        //     if (isset($messages3[$i + 1])) {
+        //         DB::table('messages')->insert([
+        //             'conversation_id' => 3,
+        //             'sender_id' => 2,
+        //             'message' => $messages3[$i + 1],
+        //             'created_at' => $timestamp->copy(),
+        //             'updated_at' => $timestamp->copy(),
+        //         ]);
+        //         $timestamp->addMinutes(1);
+        //     }
 
-            // user 3 → user 1 (ako postoji sledeća poruka)
-            if (isset($messages3[$i + 2])) {
-                DB::table('messages')->insert([
-                    'conversation_id' => 3,
-                    'sender_id' => 1001,
-                    'message' => $messages3[$i + 2],
-                    'created_at' => $timestamp->copy(),
-                    'updated_at' => $timestamp->copy(),
-                ]);
-                $timestamp->addMinutes(1);
-            }
-        }
+        //     // user 3 → user 1 (ako postoji sledeća poruka)
+        //     if (isset($messages3[$i + 2])) {
+        //         DB::table('messages')->insert([
+        //             'conversation_id' => 3,
+        //             'sender_id' => 1001,
+        //             'message' => $messages3[$i + 2],
+        //             'created_at' => $timestamp->copy(),
+        //             'updated_at' => $timestamp->copy(),
+        //         ]);
+        //         $timestamp->addMinutes(1);
+        //     }
+        // }
 
     }
 }

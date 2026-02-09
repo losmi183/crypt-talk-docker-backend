@@ -87,20 +87,10 @@ class AuthServices {
         return $userData; 
     }
 
-    public function verifyEmail($verify_token) {
-
-        $status = $this->jwtServices->decodeJWT($verify_token);
-        if ($status == 403) {
-            abort( 403, 'Token has expired');
-        }
-        if ($status != 200) {
-            abort(400, 'Token not valid');
-        }
-
-        $userData = $this->jwtServices->getContent(); 
-
+    public function verifyEmail(array $userData) 
+    {
         $email = $userData['email'];
-
+        
         try {
             User::where('email', $email)
             ->update([
