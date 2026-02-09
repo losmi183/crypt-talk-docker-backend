@@ -69,6 +69,8 @@ class ConversationServices {
     {
         $user = $this->jwtServices->getContent();
         $user_id = $user['id'];
+        $friend = DB::table('users')->where('id', $friend_id)->first();
+        $friend_role = $friend->role;
 
         // 1. Proveri da li već postoji privatna konverzacija između ova dva usera
         $existingConversationId = DB::table('conversation_user as cu1')
@@ -85,12 +87,12 @@ class ConversationServices {
         }
 
         // 2. Ako ne postoji, kreiraj novu
-        return DB::transaction(function () use ($user_id, $friend_id) {
+        return DB::transaction(function () use ($user_id, $friend_id, $friend_role) {
             // Kreiraj zapis u conversations
             $newId = DB::table('conversations')->insertGetId([
-                'type' => 'private',
-                'salt' => bin2hex(random_bytes(16)),
-                'iterations' => config('crypto.pbkdf2_iterations'),
+                'type' => $friend_role == 'ai' ? 'chatbot' : 'private',
+                'salt' => $friend_role == 'ai' ? null : bin2hex(random_bytes(16)),
+                'iterations' => $friend_role == 'ai' ? null : config('crypto.pbkdf2_iterations'),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

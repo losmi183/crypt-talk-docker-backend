@@ -85,7 +85,7 @@ class ConversationSeeder extends Seeder
             ],     
         ]);
 
-        $users = DB::table('users')->where('id', '!=', 101)->get();
+        $users = DB::table('users')->where('role', '!=', 'ai')->get();
         foreach ($users as $user) {
             $conversation_id = DB::table('conversations')->insertGetId([
                 'type' => 'chatbot',

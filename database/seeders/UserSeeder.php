@@ -62,6 +62,14 @@ class UserSeeder extends Seeder
         
         DB::table('users')->insert([
             'id' => 101,
+            'name' => 'Crypt talk AI assistent',
+            'role' => 'ai',
+            'email' => 'ai_assistent@crypt-talk.online',
+            'password' => Hash::make('vladaai'),
+            'active_from' => now(),
+        ]);      
+        DB::table('users')->insert([
+            'id' => 102,
             'name' => 'Vlada AI',
             'role' => 'ai',
             'email' => 'vlada_ai@mail.com',

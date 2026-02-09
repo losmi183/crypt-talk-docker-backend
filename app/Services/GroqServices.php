@@ -16,7 +16,14 @@ class GroqServices {
 
     public function send(array $data): string
     {
-        $aiPerson = \DB::table('ai_persons')->where('user_id', '101')->first();
+        $conversation_user = \DB::table('conversation_user as cu')
+            ->leftJoin('users as u', 'u.id', 'cu.user_id')
+            ->where('cu.conversation_id', $data['conversationId'])
+            ->where('cu.user_id', '!=', $data['user_id'])
+            ->where('u.role', 'ai')
+            ->first();
+
+        $aiPerson = \DB::table('ai_persons')->where('user_id', $conversation_user->user_id)->first();
 
         // Log::info(json_encode($aiPerson));
         
@@ -24,8 +31,8 @@ class GroqServices {
         $limitedMessages = $this->aiServices->trimMessagesToTokenLimit($conversationHistory, $aiPerson->max_tokens);
         $messages = $this->aiServices->formatMessagesForAI($limitedMessages, $aiPerson);
 
-        Log::info(json_encode('$messages'));
-        Log::info(json_encode($messages));
+        // Log::info(json_encode('$messages'));
+        // Log::info(json_encode($messages));
 
         $client = new \GuzzleHttp\Client([
             'timeout' => 30.0,
@@ -52,12 +59,8 @@ class GroqServices {
             $statusCode = $response->getStatusCode();
             $body = $response->getBody()->getContents();
             
-            // Log za debug
-            \Log::info('Groq API Response', [
-                'status' => $statusCode,
-                'body' => $body
-            ]);
-            
+
+           
             if ($statusCode !== 200) {
                 $errorData = json_decode($body, true);
                 $errorMessage = $errorData['error']['message'] ?? $body ?? 'Unknown error';
