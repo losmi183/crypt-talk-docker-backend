@@ -8,14 +8,15 @@ use App\Models\User;
 use App\Models\Message;
 use App\Events\MessageSent;
 use App\Models\Conversation;
+use App\Services\GroqServices;
 use App\Services\PusherServices;
 use App\Repository\UserRepository;
-use App\Services\GroqServices;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
 use App\Repository\MessageRepository;
+use Illuminate\Support\Facades\Cache;
 use App\Repository\ConversationRepository;
 
 class ConversationServices {
@@ -46,23 +47,32 @@ class ConversationServices {
     {
 
         $user = $this->jwtServices->getContent();
-        $result = new stdClass;
-        $result->conversations = $this->conversationRepository->userConversations($user['id']);
-
-        $messages = DB::table('messages as m')
-        ->leftJoin('conversation_user as cu', 'cu.conversation_id', '=', 'm.conversation_id')
-        ->where('cu.user_id', $user['id'])
-        ->get();
-
-        $result->totalMessages = count($messages);
-        $result->encryptedMessages = 0;
+        $userId = $user['id'];
         
-        foreach ($messages as $message) {
-            if($message->is_encrypted) {
-                $result->encryptedMessages++;
+        $cacheKey = "user:{$userId}:conversations:index";
+        $cacheTime = 600;
+        
+        return Cache::remember($cacheKey, $cacheTime, function() use ($userId) {
+
+            $result = new stdClass;
+
+            $result->conversations = $this->conversationRepository->userConversations($userId);
+            
+            $messages = DB::table('messages as m')
+            ->leftJoin('conversation_user as cu', 'cu.conversation_id', '=', 'm.conversation_id')
+            ->where('cu.user_id', $userId)
+            ->get();
+
+            $result->totalMessages = count($messages);
+            $result->encryptedMessages = 0;
+            
+            foreach ($messages as $message) {
+                if($message->is_encrypted) {
+                    $result->encryptedMessages++;
+                }
             }
-        }
-        return $result;
+            return $result;
+        });
     }
 
     public function startConversation($friend_id): int 

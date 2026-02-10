@@ -4,26 +4,29 @@ namespace App\Services;
 
 use Illuminate\Support\Facades\Log;
 use App\Repository\MessageRepository;
+use Illuminate\Support\Facades\Cache;
+use App\Services\ConversationServices;
+use App\Repository\ConversationRepository;
 
 class GroqServices {
 
     private MessageRepository $messageRepository;
+    private ConversationRepository $conversationRepository;
     private AIServices $aiServices;
-    public function __construct(MessageRepository $messageRepository, AIServices $aiServices) {
+
+    public function __construct(
+        MessageRepository $messageRepository, 
+        AIServices $aiServices, 
+        ConversationRepository $conversationRepository, 
+    ) {
         $this->messageRepository = $messageRepository;
+        $this->conversationRepository = $conversationRepository;
         $this->aiServices = $aiServices;
     }
 
     public function send(array $data): string
     {
-        $conversation_user = \DB::table('conversation_user as cu')
-            ->leftJoin('users as u', 'u.id', 'cu.user_id')
-            ->where('cu.conversation_id', $data['conversationId'])
-            ->where('cu.user_id', '!=', $data['user_id'])
-            ->where('u.role', 'ai')
-            ->first();
-
-        $aiPerson = \DB::table('ai_persons')->where('user_id', $conversation_user->user_id)->first();
+        $aiPerson = $this->getAiPerson($data['conversationId'], $data['user_id']);
 
         // Log::info(json_encode($aiPerson));
         
@@ -90,5 +93,13 @@ class GroqServices {
             return "General error: " . $e->getMessage();
             Log::error(json_encode($e->getMessage()));
         }
+    }
+
+    public function getAiPerson(int $conversationId, int $userId) {
+        $cacheKey = "conversation:{$conversationId}:ai_person";
+
+        return Cache::remember($cacheKey, 86400, function() use ($conversationId, $userId) {
+            return $this->conversationRepository->aiPerson($conversationId, $userId);
+        });
     }
 }

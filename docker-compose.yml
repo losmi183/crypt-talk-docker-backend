@@ -23,10 +23,13 @@ services:
       DB_DATABASE: crypt_talk
       DB_USERNAME: crypt_user
       DB_PASSWORD: secret
+      REDIS_HOST: redis      # REDIS
+      REDIS_PORT: 6379       # REDIS
     networks:
       - crypt_network
     depends_on:
       - db
+      - redis                # REDIS
   db:
     image: mariadb:latest
     container_name: crypt_db
@@ -42,6 +45,22 @@ services:
       - dbdata:/var/lib/mysql
     networks:
       - crypt_network
+
+  # REDIS SERVIS
+  redis:
+    image: redis:7-alpine
+    container_name: crypt_redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - redisdata:/data
+    networks:
+      - crypt_network
+    command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-}"
+    # appendonly yes = persistencija podataka na disk
+    # requirepass = opcionalni password (ako ga staviš u .env)
+  
 networks:
   crypt_network:
     driver: bridge
@@ -49,3 +68,6 @@ networks:
 volumes:
   dbdata:
     driver: local
+  redisdata:      # REDIS
+    driver: local
+

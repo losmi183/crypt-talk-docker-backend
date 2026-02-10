@@ -77,6 +77,19 @@ class ConversationRepository
         return $conversations;
    }
 
+   public function aiPerson($conversationId, $userId): stdClass
+   {
+        $aiPerson = \DB::table('conversation_user as cu')
+            ->select('ai.user_id', 'ai.system_prompt', 'ai.description', 'ai.greeting_message', 'ai.temperature', 'ai.max_tokens')
+            ->join('ai_persons as ai', 'ai.user_id', 'cu.user_id')
+            ->where('cu.conversation_id', $conversationId)
+            ->where('cu.user_id', '!=', $userId)
+            // ->where('u.role', 'ai')
+            ->first();
+
+        return $aiPerson;
+   }
+
    public function conversationParticipants(array $data): Collection
    {
         return DB::table('conversation_user')
