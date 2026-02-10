@@ -113,6 +113,9 @@ class ConversationServices {
                 ['conversation_id' => $newId, 'user_id' => $friend_id, 'joined_at' => now(), 'created_at' => now()],
             ]);
 
+            Cache::forget("user:{$user_id}:conversations:index");
+            Cache::forget("user:{$friend_id}:conversations:index");
+
             return $newId;
         });
     }
