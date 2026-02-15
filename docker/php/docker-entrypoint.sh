@@ -12,10 +12,14 @@ fi
 # ⭐ DODATO: Odaberi Apache config baziran na APP_ENV
 if [ "$APP_ENV_VALUE" = "production" ]; then
     echo "Production environment - using SSL configuration"
-    cp /etc/apache2/sites-available/laravel-ssl.conf /etc/apache2/sites-available/000-default.conf
+    a2dissite 000-default.conf 2>/dev/null || true
+    a2dissite laravel-dev.conf 2>/dev/null || true
+    a2ensite laravel-ssl.conf 2>/dev/null || true
 else
     echo "Development environment - using HTTP configuration"
-    cp /etc/apache2/sites-available/laravel-dev.conf /etc/apache2/sites-available/000-default.conf
+    a2dissite 000-default.conf 2>/dev/null || true
+    a2dissite laravel-ssl.conf 2>/dev/null || true
+    a2ensite laravel-dev.conf 2>/dev/null || true
 fi
 
 # Install Composer dependencies if vendor folder doesn't exist
