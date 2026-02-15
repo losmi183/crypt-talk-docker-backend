@@ -25,11 +25,16 @@ services:
       DB_PASSWORD: secret
       REDIS_HOST: redis      # REDIS
       REDIS_PORT: 6379       # REDIS
+      QDRANT_HOST: ${OLLAMA_HOST}         # QDRANT
+      OLLAMA_HOST: ${QDRANT_HOST}        # OLLAMA
+
     networks:
       - crypt_network
     depends_on:
       - db
       - redis                # REDIS
+      - qdrant               # QDRANT
+      - ollama               # OLLAMA
   db:
     image: mariadb:latest
     container_name: crypt_db
@@ -60,6 +65,33 @@ services:
     command: redis-server --appendonly yes --requirepass "${REDIS_PASSWORD:-}"
     # appendonly yes = persistencija podataka na disk
     # requirepass = opcionalni password (ako ga staviš u .env)
+
+  # ← QDRANT - Vektorska baza
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: crypt_qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"   # HTTP API
+      - "6334:6334"   # gRPC (optional)
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    networks:
+      - crypt_network
+    environment:
+      QDRANT__SERVICE__HTTP_PORT: 6333
+
+  # ← OLLAMA - Embedding model
+  ollama:
+    image: ollama/ollama:latest
+    container_name: crypt_ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_models:/root/.ollama
+    networks:
+      - crypt_network
   
 networks:
   crypt_network:
@@ -69,5 +101,9 @@ volumes:
   dbdata:
     driver: local
   redisdata:      # REDIS
+    driver: local
+  qdrant_storage:      # QDRANT
+    driver: local
+  ollama_models:       # OLLAMA
     driver: local
 

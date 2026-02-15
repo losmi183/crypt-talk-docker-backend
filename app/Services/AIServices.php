@@ -34,24 +34,24 @@ class AIServices {
 
 
    public function formatMessagesForAI(array $conversationHistory, stdClass $aiPerson): array
-{
-    $messages = [];
-    
-    // Heredoc sintaksa za multi-line stringove
-    $systemPrompt = $aiPerson->system_prompt;
-    
-    $messages[] = [
-        'role' => 'system',
-        'content' => $systemPrompt
-    ];
-    
-    foreach ($conversationHistory as $msg) {
+    {
+        $messages = [];
+        
+        // Heredoc sintaksa za multi-line stringove
+        $systemPrompt = $aiPerson->system_prompt;
+        
         $messages[] = [
-            'role' => $msg->sender_id == $aiPerson->user_id ? 'assistant' : 'user',
-            'content' => $msg->message
+            'role' => 'system',
+            'content' => $systemPrompt
         ];
+        
+        foreach ($conversationHistory as $msg) {
+            $messages[] = [
+                'role' => $msg->sender_id == $aiPerson->user_id ? 'assistant' : 'user',
+                'content' => $msg->message
+            ];
+        }
+        
+        return $messages;
     }
-    
-    return $messages;
-}
 }
