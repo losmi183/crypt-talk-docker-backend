@@ -68,14 +68,14 @@ class UserSeeder extends Seeder
             'password' => Hash::make('vladaai'),
             'active_from' => now(),
         ]);      
-        DB::table('users')->insert([
-            'id' => 102,
-            'name' => 'Vlada AI',
-            'role' => 'ai',
-            'email' => 'vlada_ai@mail.com',
-            'password' => Hash::make('vladaai'),
-            'active_from' => now(),
-        ]);      
+        // DB::table('users')->insert([
+        //     'id' => 102,
+        //     'name' => 'Vlada AI',
+        //     'role' => 'ai',
+        //     'email' => 'vlada_ai@mail.com',
+        //     'password' => Hash::make('vladaai'),
+        //     'active_from' => now(),
+        // ]);      
         
         
 
