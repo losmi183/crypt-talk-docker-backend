@@ -18,6 +18,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'jwt' => JWTMiddleware::class,
         ]);
+        // $middleware->validateCsrfTokens(except: ['*']);
     })
     ->withExceptions(function ($exceptions) {
         $exceptions->render(function (Throwable $e, Request $request) {

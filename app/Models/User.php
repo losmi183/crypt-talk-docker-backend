@@ -53,4 +53,9 @@ class User extends Authenticatable
         }
         return $path . $this->avatar;
     }
+
+    public function fcmTokens()
+    {
+        return $this->hasMany(FcmToken::class);
+    }
 }

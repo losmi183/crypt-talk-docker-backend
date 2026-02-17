@@ -229,15 +229,37 @@ class ConversationServices {
 
         // $conversation = DB::table('conversations')->where('id', $conversation_id)->first();
         $participants = $this->conversationRepository->conversationParticipants($data);
+        $firebaseService = new FirebaseService();
 
         foreach ($participants as $participant) {
+            // Pusher
             $channel = config('pusher.PRIVATE_CONVERSATION').$participant->user_id;
-            $this->pusherServices->push(
-                $event,
-                $channel,
-                $data['conversationId'], 
-                $message, 
-            );
+            try {
+                $this->pusherServices->push(
+                    $event,
+                    $channel,
+                    $data['conversationId'], 
+                    $message, 
+                );
+            } catch (\Throwable $th) {
+                Log::error($th->getMessage());
+            }
+            // Firebase FCM
+
+            $recipient = User::find($participant->user_id);
+            if ($recipient) {
+                try {
+                    $firebaseService->sendNotification(
+                        user: $recipient,
+                        title: $message->sender_name,
+                        body: $message->message,
+                        data: ['conversation_id' => (string) $data['conversationId']]
+                    );
+                } catch (\Throwable $th) {
+                    Log::error($th->getMessage());
+                }
+            }
+
         }
 
         $array[] = $message;

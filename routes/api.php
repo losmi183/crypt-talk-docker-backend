@@ -1,12 +1,13 @@
 <?php
 
+use App\Http\Controllers\AttachmentController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConversatonController;
+use App\Http\Controllers\FcmTokenController;
+use App\Http\Controllers\PusherAuthController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\AttachmentController;
-use App\Http\Controllers\PusherAuthController;
-use App\Http\Controllers\ConversatonController;
 
 
 Route::group(['prefix' => 'auth'], function () {
@@ -28,8 +29,13 @@ Route::group(['prefix' => 'auth'], function () {
     
     Route::post('/google-login', [AuthController::class, 'googleLogin']);
     Route::get('/google/callback', [AuthController::class, 'handleGoogleCallback']);    
-    
 });
+
+Route::middleware('jwt')->group(function () {
+    Route::post('/fcm-token', [FcmTokenController::class, 'store']);
+    Route::delete('/fcm-token', [FcmTokenController::class, 'destroy']);
+});
+
 
 Route::group(['middleware' => 'jwt', 'prefix' => 'auth'], function () {
     Route::get('/whoami', [AuthController::class, 'whoami']);
