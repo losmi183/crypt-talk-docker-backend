@@ -11,7 +11,7 @@ class PusherServices {
 
     }
 
-    public function push(string $event, string $channel, int $conversation_id, stdClass $message) : bool 
+    public function push(string $event, string $channel, int $conversation_id, ?stdClass $message) : bool 
     {
         
         $pusher = new Pusher(

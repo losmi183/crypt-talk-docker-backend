@@ -26,38 +26,38 @@ class UserSeeder extends Seeder
             'avatar' => '1.png',
             'role'=> Role::ADMIN->value
         ]);               
-        // DB::table('users')->insert([
-        //     'id' => 2,
-        //     'name' => 'emil',
-        //     'email' => 'emil@mail.com',
-        //     'password' => Hash::make('emil'),
-        //     'active_from' => now(),
-        //     'avatar' => '2.png'
-        // ]);               
-        // DB::table('users')->insert([
-        //     'id' => 3,
-        //     'name' => 'simke',
-        //     'email' => 'simke@mail.com',
-        //     'password' => Hash::make('simke'),
-        //     'active_from' => now(),
-        //     'avatar' => '3.png'
-        // ]);               
-        // DB::table('users')->insert([
-        //     'id' => 4,
-        //     'name' => 'gaga',
-        //     'email' => 'gaga@mail.com',
-        //     'password' => Hash::make('gaga'),
-        //     'active_from' => now(),
-        //     'avatar' => '4.png'
-        // ]);               
-        // DB::table('users')->insert([
-        //     'id' => 5,
-        //     'name' => 'vlada',
-        //     'email' => 'vlada@mail.com',
-        //     'password' => Hash::make('vlada'),
-        //     'active_from' => now(),
-        //     'avatar' => '5.png'
-        // ]);               
+        DB::table('users')->insert([
+            'id' => 2,
+            'name' => 'emil',
+            'email' => 'emil@mail.com',
+            'password' => Hash::make('emil'),
+            'active_from' => now(),
+            'avatar' => '2.png'
+        ]);               
+        DB::table('users')->insert([
+            'id' => 3,
+            'name' => 'simke',
+            'email' => 'simke@mail.com',
+            'password' => Hash::make('simke'),
+            'active_from' => now(),
+            'avatar' => '3.png'
+        ]);               
+        DB::table('users')->insert([
+            'id' => 4,
+            'name' => 'gaga',
+            'email' => 'gaga@mail.com',
+            'password' => Hash::make('gaga'),
+            'active_from' => now(),
+            'avatar' => '4.png'
+        ]);               
+        DB::table('users')->insert([
+            'id' => 5,
+            'name' => 'vlada',
+            'email' => 'vlada@mail.com',
+            'password' => Hash::make('vlada'),
+            'active_from' => now(),
+            'avatar' => '5.png'
+        ]);               
     
         
         DB::table('users')->insert([

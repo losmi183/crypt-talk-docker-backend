@@ -83,17 +83,16 @@ class ConversationServices {
         $friend_role = $friend->role;
 
         // 1. Proveri da li već postoji privatna konverzacija između ova dva usera
-        $existingConversationId = DB::table('conversation_user as cu1')
+        $existingConversation = DB::table('conversation_user as cu1')
+            ->select('cu1.conversation_id')
             ->join('conversation_user as cu2', 'cu1.conversation_id', '=', 'cu2.conversation_id')
-            ->join('conversations as c', 'c.id', '=', 'cu1.conversation_id')
-            ->where('c.type', 'private')
             ->where('cu1.user_id', $user_id)
-            ->where('cu2.user_id', $friend_id)
-            ->value('c.id'); // Vraća samo ID ako postoji, inače null
+            ->where('cu2.user_id', $friend->id)
+            ->first();        
 
-        if ($existingConversationId) {
+        if ($existingConversation) {
             // Ako postoji, vrati tu konverzaciju (koristi tvoj Eloquent model)
-            return $existingConversationId;
+            return $existingConversation->conversation_id;
         }
 
         // 2. Ako ne postoji, kreiraj novu
@@ -113,8 +112,19 @@ class ConversationServices {
                 ['conversation_id' => $newId, 'user_id' => $friend_id, 'joined_at' => now(), 'created_at' => now()],
             ]);
 
+            // Briše cache
             Cache::forget("user:{$user_id}:conversations:index");
             Cache::forget("user:{$friend_id}:conversations:index");
+
+            // Salje push ka useru koji je dodat u konveryaciju
+            $channel = config('pusher.PRIVATE_CONVERSATION').$friend_id;
+            $event = 'conversation.started';
+            $this->pusherServices->push(
+                $event,
+                $channel,
+                $newId, 
+                null, 
+            );
 
             return $newId;
         });
