@@ -40,7 +40,7 @@ services:
     container_name: crypt_db
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "${DB_EXTERNAL_PORT:-}:3306"
     environment:
       MYSQL_ROOT_PASSWORD: secret
       MYSQL_DATABASE: crypt_talk
@@ -57,7 +57,7 @@ services:
     container_name: crypt_redis
     restart: unless-stopped
     ports:
-      - "6379:6379"
+      - "${REDIS_EXTERNAL_PORT:-}:6379"
     volumes:
       - redisdata:/data
     networks:
